@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PlayPal — Your AI Sports Companion. Real-time match explanations for cricket and football, powered by AI.">
+  <title>PlayPal — AI Sports Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ── Ambient background effects ───────────────────────────── -->
+  <div class="ambient-bg">
+    <div class="ambient-orb ambient-orb--1"></div>
+    <div class="ambient-orb ambient-orb--2"></div>
+    <div class="ambient-orb ambient-orb--3"></div>
+  </div>
+
+  <!-- ── Header ───────────────────────────────────────────────── -->
+  <header id="app-header" class="header">
+    <div class="header__brand">
+      <div class="header__logo">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3B82F6"/>
+              <stop offset="100%" stop-color="#8B5CF6"/>
+            </linearGradient>
+          </defs>
+          <path d="M20 2L36 11V29L20 38L4 29V11L20 2Z" stroke="url(#logoGrad)" stroke-width="2.5" fill="none"/>
+          <path d="M16 12L30 20L16 28V12Z" fill="url(#logoGrad)"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="header__title">PlayPal</h1>
+        <p class="header__subtitle">AI Sports Companion</p>
+      </div>
+    </div>
+    <div class="header__controls">
+      <div class="sport-switcher" id="sport-switcher">
+        <button class="sport-btn sport-btn--active" data-sport="cricket" id="btn-cricket">
+          <span class="sport-btn__icon">🏏</span>
+          <span class="sport-btn__label">Cricket</span>
+        </button>
+        <button class="sport-btn" data-sport="football" id="btn-football">
+          <span class="sport-btn__icon">⚽</span>
+          <span class="sport-btn__label">Football</span>
+        </button>
+      </div>
+      <div class="mode-switcher" id="mode-switcher">
+        <label class="mode-label">Explain as:</label>
+        <div class="mode-pills">
+          <button class="mode-pill mode-pill--active" data-mode="beginner" id="btn-beginner">👶 Beginner</button>
+          <button class="mode-pill" data-mode="kid" id="btn-kid">🧒 Kid</button>
+          <button class="mode-pill" data-mode="expert" id="btn-expert">🎓 Expert</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main layout ──────────────────────────────────────────── -->
+  <main class="main-layout">
+
+    <!-- ── Left: Scoreboard + Events ────────────────────────── -->
+    <section class="panel panel--match" id="match-panel">
+
+      <!-- Scoreboard -->
+      <div class="scoreboard" id="scoreboard">
+        <div class="scoreboard__status">
+          <span class="live-badge" id="live-badge">
+            <span class="live-badge__dot"></span>
+            LIVE
+          </span>
+          <span class="match-info" id="match-venue"></span>
+        </div>
+
+        <!-- Cricket scoreboard -->
+        <div class="scoreboard__cricket" id="scoreboard-cricket">
+          <div class="scoreboard__teams">
+            <div class="team team--batting" id="team-batting">
+              <div class="team__flag" id="batting-flag"></div>
+              <span class="team__name" id="batting-name">IND</span>
+            </div>
+            <div class="scoreboard__score-area">
+              <div class="score-main" id="cricket-score">0/0</div>
+              <div class="score-overs" id="cricket-overs">Overs: 0.0</div>
+              <div class="score-runrate" id="cricket-runrate">RR: 0.00</div>
+            </div>
+            <div class="team team--bowling" id="team-bowling">
+              <div class="team__flag" id="bowling-flag"></div>
+              <span class="team__name" id="bowling-name">AUS</span>
+            </div>
+          </div>
+          <div class="scoreboard__detail">
+            <div class="detail-item">
+              <span class="detail-label">Batsman</span>
+              <span class="detail-value" id="current-batsman">Rohit Sharma</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Bowler</span>
+              <span class="detail-value" id="current-bowler">Mitchell Starc</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Partnership</span>
+              <span class="detail-value" id="partnership">0 (0)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Football scoreboard -->
+        <div class="scoreboard__football hidden" id="scoreboard-football">
+          <div class="scoreboard__teams">
+            <div class="team team--home" id="team-home">
+              <div class="team__flag team__flag--ars" id="home-flag"></div>
+              <span class="team__name" id="home-name">ARS</span>
+            </div>
+            <div class="scoreboard__score-area">
+              <div class="score-main" id="football-score">0 — 0</div>
+              <div class="score-overs" id="football-minute">Kick Off</div>
+              <div class="score-runrate" id="football-half">1st Half</div>
+            </div>
+            <div class="team team--away" id="team-away">
+              <div class="team__flag team__flag--mci" id="away-flag"></div>
+              <span class="team__name" id="away-name">MCI</span>
+            </div>
+          </div>
+          <div class="scoreboard__detail">
+            <div class="detail-item">
+              <span class="detail-label">Possession</span>
+              <div class="possession-bar" id="possession-bar">
+                <div class="possession-bar__fill" id="possession-fill" style="width: 50%"></div>
+              </div>
+              <span class="detail-value" id="possession-text">50% — 50%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Shots</span>
+              <span class="detail-value" id="shots-text">0 — 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match controls -->
+      <div class="match-controls">
+        <button class="btn btn--primary" id="btn-start">
+          <span class="btn__icon">▶</span>
+          Start Match
+        </button>
+        <button class="btn btn--secondary hidden" id="btn-pause">
+          <span class="btn__icon">⏸</span>
+          Pause
+        </button>
+        <button class="btn btn--ghost hidden" id="btn-reset">
+          <span class="btn__icon">↺</span>
+          Reset
+        </button>
+        <div class="speed-control">
+          <label class="speed-label">Speed:</label>
+          <input type="range" id="speed-slider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+          <span class="speed-value" id="speed-value">1×</span>
+        </div>
+      </div>
+
+      <!-- Events timeline -->
+      <div class="events-section">
+        <h2 class="section-title">
+          <span class="section-title__icon">📋</span>
+          Live Events
+        </h2>
+        <div class="events-timeline" id="events-timeline">
+          <div class="events-empty" id="events-empty">
+            <div class="events-empty__icon">🏟️</div>
+            <p>Press <strong>Start Match</strong> to begin the live demo</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Right: AI Explain Panel ──────────────────────────── -->
+    <aside class="panel panel--ai" id="ai-panel">
+      <div class="ai-header">
+        <div class="ai-header__icon">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="14" stroke="url(#logoGrad)" stroke-width="2" fill="rgba(59,130,246,0.1)"/>
+            <circle cx="16" cy="16" r="6" fill="url(#logoGrad)" opacity="0.8"/>
+            <circle cx="16" cy="16" r="2" fill="white"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="ai-header__title">AI Explain</h2>
+          <p class="ai-header__sub" id="ai-mode-label">Mode: Beginner</p>
+        </div>
+      </div>
+
+      <div class="ai-content" id="ai-content">
+        <div class="ai-placeholder" id="ai-placeholder">
+          <div class="ai-placeholder__pulse"></div>
+          <p>Click on any event to get an AI-powered explanation</p>
+          <p class="ai-placeholder__hint">Or start the match and events will auto-explain!</p>
+        </div>
+      </div>
+
+      <!-- AI explanation card (hidden until triggered) -->
+      <div class="ai-explain hidden" id="ai-explain">
+        <div class="ai-explain__header">
+          <span class="ai-explain__event-badge" id="ai-event-badge">Event</span>
+          <span class="ai-explain__confidence" id="ai-confidence">95% confident</span>
+        </div>
+        <div class="ai-explain__body">
+          <p class="ai-explain__text" id="ai-explain-text"></p>
+        </div>
+        <div class="ai-explain__funfact hidden" id="ai-funfact">
+          <span class="ai-funfact__icon">💡</span>
+          <p class="ai-funfact__text" id="ai-funfact-text"></p>
+        </div>
+        <div class="ai-explain__footer">
+          <span class="ai-explain__source">
+            <span class="ai-source-dot"></span>
+            Demo Mode — Cached Response
+          </span>
+        </div>
+      </div>
+
+      <!-- AI Explain history -->
+      <div class="ai-history" id="ai-history">
+        <h3 class="ai-history__title">Recent Explanations</h3>
+        <div class="ai-history__list" id="ai-history-list"></div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ── Toast notification ──────────────────────────────────── -->
+  <div class="toast hidden" id="toast">
+    <span class="toast__icon" id="toast-icon">🏏</span>
+    <span class="toast__text" id="toast-text"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
